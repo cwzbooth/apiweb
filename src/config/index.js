@@ -13,8 +13,8 @@ export default {
    * @description api请求基础路径
    */
   baseUrl: {
-    dev: 'http://apiadmin.fmoons.com/',
-    pro: 'http://apiadmin.fmoons.com/'
+    dev: 'https://apiadmin.fmoons.com/',
+    pro: 'https://apiadmin.fmoons.com/'
   },
   /**
    * @description 需要加载的插件
