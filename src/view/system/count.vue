@@ -1,5 +1,5 @@
 <style scoped>
-  @import './log.less';
+  @import './count.less';
 </style>
 <template>
   <div>
@@ -9,9 +9,12 @@
           <Form inline>
             <FormItem class="margin-bottom-0">
               <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
-                <Option :value="1">操作URL</Option>
-                <Option :value="2">用户昵称</Option>
-                <Option :value="3">用户openid</Option>
+                <Option :value="1">用户昵称</Option>
+                <Option :value="2">用户openid</Option>
+                <Option :value="3">接口映射</Option>
+                <Option :value="4">接口组标识</Option>
+                <Option :value="5">应用AppId</Option>
+                <Option :value="6">应用组标识</Option>
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
@@ -41,41 +44,9 @@
   </div>
 </template>
 <script>
-import { getList, del } from '@/api/log'
-import expandRow from './table_expand.vue'
+import { getList } from '@/api/count'
+import expandRow from './table_expandCount.vue'
 import { getDate } from '@/libs/tools'
-
-const deleteButton = (vm, h, currentRow, index) => {
-  if (vm.buttonShow.del) {
-    return h('Poptip', {
-      props: {
-        confirm: true,
-        title: '您确定要删除这条数据吗? ',
-        transfer: true
-      },
-      on: {
-        'on-ok': () => {
-          del(currentRow.id).then(response => {
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          })
-          currentRow.loading = false
-        }
-      }
-    }, [
-      h('Button', {
-        style: {
-          margin: '0 5px'
-        },
-        props: {
-          type: 'error',
-          placement: 'top',
-          loading: currentRow.isDeleting
-        }
-      }, vm.$t('delete_button'))
-    ])
-  }
-}
 
 export default {
   name: 'system_user',
@@ -84,6 +55,7 @@ export default {
     return {
       columnsList: [
         {
+          title: 'D',
           type: 'expand',
           width: 50,
           render: (h, params) => {
@@ -103,14 +75,21 @@ export default {
         {
           title: '头像',
           align: 'center',
-          key: 'avatar',
-          width: 100
+          width: 100,
+          render: (h, params) => {
+            return h('img', {
+              attrs: {
+                class: 'avatar',
+                src: params.row.avatar
+              }
+            })
+          }
         },
         {
           title: 'Openid',
           align: 'center',
           key: 'openid',
-          minWidth: 130
+          minWidth: 50
         },
         {
           title: 'UUID',
@@ -160,17 +139,7 @@ export default {
           title: 'ip',
           align: 'center',
           key: 'create_ip',
-          minWidth: 50
-        },
-        {
-          title: '操作',
-          align: 'center',
-          width: 125,
-          render: (h, params) => {
-            return h('div', [
-              deleteButton(this, h, params.row, params.index)
-            ])
-          }
+          minWidth: 100
         }
       ],
       tableData: [],
@@ -198,7 +167,7 @@ export default {
   created () {
     let vm = this
     vm.getList()
-    vm.hasRule('System/del').then(res => {
+    vm.hasRule('Count/del').then(res => {
       vm.buttonShow.del = res
     })
   },

@@ -226,3 +226,8 @@ export const objEqual = (obj1, obj2) => {
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
 }
+
+export const getAvatar = (e) => {
+  const res = '<image src=' + e + '></image>'
+  return res
+}
