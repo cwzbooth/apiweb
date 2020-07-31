@@ -82,6 +82,9 @@
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
           <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
+        <FormItem label="应用接口地址" prop="apiUrl">
+          <Input v-model="formItem.apiUrl" placeholder="请输入应用接口地址"></Input>
+        </FormItem>
         <FormItem label="组描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
                  placeholder="请输入接口组描述"></Input>
@@ -113,6 +116,7 @@ const editButton = (vm, h, currentRow, index) => {
         'click': () => {
           vm.formItem.id = currentRow.id
           vm.formItem.name = currentRow.name
+          vm.formItem.apiUrl = currentRow.apiUrl
           vm.formItem.hash = currentRow.hash
           vm.formItem.image = currentRow.image
           vm.formItem.description = currentRow.description
@@ -174,6 +178,12 @@ export default {
           key: 'name'
         },
         {
+          title: '接口地址',
+          align: 'center',
+          key: 'apiUrl',
+          minWidth: 130
+        },
+        {
           title: '接口组描述',
           align: 'center',
           key: 'description'
@@ -190,6 +200,12 @@ export default {
               return h('span', params.row.hot)
             }
           }
+        },
+        {
+          title: '接口组请求量',
+          align: 'center',
+          key: 'hits',
+          width: 150
         },
         {
           title: '接口组标识',
@@ -263,10 +279,14 @@ export default {
         description: '',
         name: '',
         hash: '',
+        apiUrl: '',
         image: '',
         id: 0
       },
       ruleValidate: {
+        apiUrl: [
+          { required: true, message: '应用接口地址不能为空', trigger: 'blur' }
+        ],
         name: [
           { required: true, message: '接口组名称不能为空', trigger: 'blur' }
         ]

@@ -156,6 +156,12 @@ export default {
           width: 140
         },
         {
+          title: '应用组请求量',
+          align: 'center',
+          key: 'hits',
+          width: 150
+        },
+        {
           title: '应用组状态',
           align: 'center',
           width: 120,

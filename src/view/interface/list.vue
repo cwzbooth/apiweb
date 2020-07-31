@@ -281,6 +281,12 @@ export default {
           width: 140
         },
         {
+          title: '接口请求量',
+          align: 'center',
+          key: 'hits',
+          width: 120
+        },
+        {
           title: '请求方式',
           align: 'center',
           width: 95,

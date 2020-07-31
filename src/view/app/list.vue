@@ -73,9 +73,6 @@
         <FormItem label="应用描述" prop="app_info">
           <Input v-model="formItem.app_info" type="textarea"></Input>
         </FormItem>
-        <FormItem label="应用接口地址" prop="app_apiUrl">
-          <Input v-model="formItem.app_apiUrl" placeholder="请输入应用接口地址"></Input>
-        </FormItem>
         <FormItem label="接口访问" prop="app_api">
           <div class="api-box">
             <div class="api-group" v-for="(apiArr, groupId) in groupList" :key="groupId">
@@ -121,7 +118,6 @@ const editButton = (vm, h, currentRow, index) => {
           getAll().then(response => {
             vm.appGroup = response.data.data.list
             vm.formItem.id = currentRow.id
-            vm.formItem.app_apiUrl = currentRow.app_apiUrl
             vm.formItem.app_name = currentRow.app_name
             vm.formItem.app_info = currentRow.app_info
             vm.formItem.app_id = currentRow.app_id
@@ -225,16 +221,16 @@ export default {
           width: 285
         },
         {
+          title: '应用请求量',
+          align: 'center',
+          key: 'hits',
+          width: 120
+        },
+        {
           title: '应用说明',
           align: 'center',
           key: 'app_info',
           width: 160
-        },
-        {
-          title: '接口地址',
-          align: 'center',
-          key: 'app_apiUrl',
-          minWidth: 130
         },
         {
           title: '应用状态',
@@ -305,15 +301,11 @@ export default {
         app_id: '',
         app_secret: '',
         app_info: '',
-        app_apiUrl: '',
         app_api: {},
         app_group: 'default',
         id: 0
       },
       ruleValidate: {
-        app_apiUrl: [
-          { required: true, message: '应用接口地址不能为空', trigger: 'blur' }
-        ],
         app_name: [
           { required: true, message: '应用名称不能为空', trigger: 'blur' }
         ]

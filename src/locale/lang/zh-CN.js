@@ -6,6 +6,7 @@ export default {
   user_setting: '用户管理',
   auth_setting: '权限管理',
   logs: '操作日志',
+  counts: '请求列表',
   apps_setting: '应用接入',
   apps_group: '应用分组',
   apps_list: '应用列表',
