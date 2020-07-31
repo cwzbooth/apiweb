@@ -124,7 +124,8 @@ const deleteButton = (vm, h, currentRow, index) => {
     }, [
       h('Button', {
         style: {
-          margin: '0 5px'
+          margin: '0 5px',
+          display: (currentRow.leavel !== 0) ? '' : 'none'
         },
         props: {
           type: 'error',
@@ -157,6 +158,12 @@ export default {
           title: '用户昵称',
           align: 'center',
           key: 'nickname',
+          width: 160
+        },
+        {
+          title: '用户级别',
+          align: 'center',
+          key: 'leavel',
           width: 160
         },
         {
