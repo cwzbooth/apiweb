@@ -73,3 +73,14 @@ export const del = (id) => {
     }
   })
 }
+
+/**
+ * 刷新路由
+ * @returns {wx.RequestTask | never}
+ */
+export const refresh = () => {
+  return axios.request({
+    url: 'Menu/refresh',
+    method: 'get'
+  })
+}

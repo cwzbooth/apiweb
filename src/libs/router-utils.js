@@ -17,6 +17,7 @@ export const dynamicRouterAdd = () => {
 // @函数: 遍历后台传来的路由字符串，转换为组件对象
 export const filterAsyncRouter = (asyncRouterMap) => {
   let accessedRouters = []
+  // console.log(asyncRouterMap)
   if (asyncRouterMap) {
     asyncRouterMap.filter(route => {
       if (route.show === 1) {

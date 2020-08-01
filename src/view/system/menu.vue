@@ -5,6 +5,7 @@
   <div class="search">
     <Card>
       <Row class="operation">
+        <Button type="warning" v-has="'Menu/refresh'" class="margin-left-5 margin-right-20" @click="confirmRefresh = true" icon="md-refresh">刷新路由</Button>
         <Button @click="add" class="margin-right-5" type="primary" icon="md-add">添加子菜单</Button>
         <Button @click="addRoot" class="margin-right-5" icon="md-add">添加顶级菜单</Button>
         <Button @click="delAll" class="margin-right-5" icon="md-trash">批量删除</Button>
@@ -20,6 +21,7 @@
             <DropdownItem name="expandAll">展开所有</DropdownItem>
           </DropdownMenu>
         </Dropdown>
+
       </Row>
       <Row>
         <Col :md="8" :lg="8" :xl="11" :xxl="8">
@@ -162,12 +164,25 @@
         <Button type="primary" :loading="submitLoading" @click="submitAdd">提交</Button>
       </div>
     </Modal>
+
+      <Modal v-model="confirmRefresh" width="360">
+        <p slot="header" style="color:#f60;text-align:center">
+          <Icon type="information-circled"></Icon>
+          <span>确定要刷新路由么</span>
+        </p>
+        <div style="text-align:center">
+          <p>刷新路由是一个非常危险的操作，它有可能影响到您现有接口的访问，请确认无误后刷新！！</p>
+        </div>
+        <div slot="footer">
+          <Button type="error" size="large" long  :loading="refreshLoading" @click="refreshRoute">确定刷新</Button>
+        </div>
+      </Modal>
   </div>
 </template>
 
 <script>
 import IconChoose from '_c/icon-choose'
-import { getList, add, edit, del } from '@/api/menu'
+import { getList, add, edit, del, refresh } from '@/api/menu'
 
 export default {
   name: 'system_menu',
@@ -176,6 +191,7 @@ export default {
   },
   data () {
     return {
+      confirmRefresh: false,
       loading: false, // 树加载状态
       maxHeight: '',
       modalVisible: false, // 添加显示
@@ -413,6 +429,18 @@ export default {
       } else {
         vm.getList(1)
       }
+    },
+    refreshRoute () {
+      let vm = this
+      vm.refreshLoading = true
+      refresh().then(response => {
+        vm.$Message.success(response.data.msg)
+        vm.confirmRefresh = false
+        vm.refreshLoading = false
+      }).catch(() => {
+        vm.confirmRefresh = false
+        vm.refreshLoading = false
+      })
     }
   },
   mounted () {
