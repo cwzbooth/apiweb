@@ -156,10 +156,18 @@ export default {
           width: 140
         },
         {
-          title: '应用组请求量',
+          title: '请求量',
           align: 'center',
           key: 'hits',
-          width: 150
+          width: 150,
+          sortable: true
+        },
+        {
+          title: '所属用户',
+          align: 'center',
+          Width: 80,
+          sortable: true,
+          key: 'uid'
         },
         {
           title: '应用组状态',

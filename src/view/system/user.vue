@@ -61,6 +61,42 @@
         <FormItem label="用户密码" prop="password">
           <Input v-model="formItem.password" type="password" placeholder="用户密码"></Input>
         </FormItem>
+        <FormItem label="用户头像" prop="avatar">
+          <div class="demo-upload-list" v-if="formItem.avatar">
+            <img :src="formItem.avatar">
+            <div class="demo-upload-list-cover">
+              <Icon type="ios-trash-outline" @click.native="handleImgRemove()"></Icon>
+            </div>
+          </div>
+          <input v-if="formItem.image" v-model="formItem.avatar" type="hidden" name="avatar">
+          <Upload type="drag"
+                  :action="uploadUrl"
+                  :headers="uploadHeader"
+                  v-if="!formItem.avatar"
+                  :format="['jpg','jpeg','png']"
+                  :max-size="5120"
+                  :on-success="handleImgSuccess"
+                  :on-format-error="handleImgFormatError"
+                  :on-exceeded-size="handleImgMaxSize"
+                  style="display: inline-block;width:58px">
+            <div style="width: 58px;height:58px;line-height: 58px">
+              <Icon type="md-camera" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem label="网站名称" prop="account_name" v-if="!formItem.id">
+          <Input v-model="formItem.account_name" placeholder="请输入网站名称"></Input>
+        </FormItem>
+        <FormItem label="应用名称" prop="app_name" v-if="!formItem.id">
+          <Input v-model="formItem.app_name" placeholder="请输入应用名称"></Input>
+        </FormItem>
+        <FormItem label="活动名称" prop="activity_name" v-if="!formItem.id">
+          <Input v-model="formItem.activity_name" placeholder="请输入活动名称"></Input>
+        </FormItem>
+        <FormItem label="活动链接" prop="activity_url" v-if="!formItem.id">
+          <Input v-model="formItem.activity_url" placeholder="请输入活动链接"></Input>
+        </FormItem>
+
         <FormItem label="权限组" prop="group_id">
           <CheckboxGroup v-model="formItem.group_id">
             <Checkbox v-for="group in groupList" :key="group.id" :label="group.id + ''">{{ group.name }}</Checkbox>
@@ -76,6 +112,8 @@
 </template>
 <script>
 import { getUserIndex, changeStatus, add, edit, del } from '@/api/user'
+import { baseUrl } from '@/libs/api.request'
+import { getToken } from '@/libs/util'
 import { getGroups } from '@/api/auth'
 
 const editButton = (vm, h, currentRow, index) => {
@@ -92,7 +130,13 @@ const editButton = (vm, h, currentRow, index) => {
           vm.formItem.id = currentRow.id
           vm.formItem.username = currentRow.username
           vm.formItem.nickname = currentRow.nickname
-          vm.formItem.password = 'ApiAdmin'
+          vm.formItem.password = '123456'
+          vm.formItem.avatar = currentRow.avatar
+          vm.formItem.account_name = currentRow.account_name
+          vm.formItem.app_name = currentRow.app_name
+          vm.formItem.activity_name = currentRow.activity_name
+          vm.formItem.activity_url = currentRow.activity_url
+
           getGroups().then(response => {
             vm.groupList = response.data.data.list
           })
@@ -141,6 +185,8 @@ export default {
   name: 'system_user',
   data () {
     return {
+      uploadUrl: baseUrl + 'Index/upload',
+      uploadHeader: { 'apiAuth': getToken() },
       columnsList: [
         {
           title: '序号',
@@ -258,6 +304,11 @@ export default {
         nickname: '',
         password: '',
         group_id: [],
+        avatar: '',
+        account_name: '',
+        app_name: '',
+        activity_name: '',
+        activity_url: '',
         id: 0
       },
       ruleValidate: {
@@ -269,6 +320,18 @@ export default {
         ],
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
+        ],
+        account_name: [
+          { required: true, message: '网站名称不能为空', trigger: 'blur' }
+        ],
+        app_name: [
+          { required: true, message: '应用名称不能为空', trigger: 'blur' }
+        ],
+        activity_name: [
+          { required: true, message: '活动名称不能为空', trigger: 'blur' }
+        ],
+        activity_url: [
+          { required: true, message: '活动接口链接不能为空', trigger: 'blur' }
         ]
       },
       buttonShow: {
@@ -328,9 +391,33 @@ export default {
     cancel () {
       this.modalSetting.show = false
     },
+    handleImgFormatError (file) {
+      this.$Notice.warning({
+        title: '文件类型不合法',
+        desc: file.name + '的文件类型不正确，请上传jpg或者png图片。'
+      })
+    },
+    handleImgRemove () {
+      this.formItem.avatar = ''
+    },
+    handleImgSuccess (response) {
+      if (response.code === 1) {
+        this.$Message.success(response.msg)
+        this.formItem.avatar = response.data.fileUrl
+      } else {
+        this.$Message.error(response.msg)
+      }
+    },
+    handleImgMaxSize (file) {
+      this.$Notice.warning({
+        title: '文件大小不合法',
+        desc: file.name + '太大啦请上传小于5M的文件。'
+      })
+    },
     doCancel (data) {
       if (!data) {
         this.formItem.id = 0
+        this.formItem.avatar = ''
         this.$refs['myForm'].resetFields()
         this.modalSetting.loading = false
         this.modalSetting.index = 0

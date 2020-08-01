@@ -101,7 +101,10 @@ export default {
           title: '应用名称',
           align: 'center',
           key: 'app_name',
-          minWidth: 130
+          minWidth: 130,
+          render: (h, params) => {
+            return h('span', params.row.app_name + '  (接口：' + params.row.api_class + ')')
+          }
         },
         {
           title: 'platform',

@@ -218,19 +218,27 @@ export default {
           title: 'AppSecret',
           align: 'center',
           key: 'app_secret',
-          width: 285
+          minWidth: 285
         },
         {
-          title: '应用请求量',
+          title: '请求量',
           align: 'center',
           key: 'hits',
-          width: 120
+          width: 120,
+          sortable: true
         },
         {
           title: '应用说明',
           align: 'center',
           key: 'app_info',
           width: 160
+        },
+        {
+          title: '所属用户',
+          align: 'center',
+          Width: 80,
+          sortable: true,
+          key: 'uid'
         },
         {
           title: '应用状态',

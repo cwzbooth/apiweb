@@ -138,3 +138,18 @@ export const own = (data) => {
     data
   })
 }
+/**
+ * 获取用户信息
+ * @param status
+ * @param uid
+ * @returns {wx.RequestTask | never}
+ */
+export const getUserOne = (uid) => {
+  return axios.request({
+    url: 'User/getUserOne',
+    method: 'get',
+    params: {
+      uid: uid
+    }
+  })
+}

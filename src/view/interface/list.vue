@@ -253,8 +253,9 @@ export default {
         {
           title: '序号',
           type: 'index',
-          width: 65,
-          align: 'center'
+          width: 100,
+          align: 'center',
+          sortable: true
         },
         {
           title: '接口名称',
@@ -266,13 +267,15 @@ export default {
           title: '接口组名称',
           align: 'center',
           minWidth: 190,
-          key: 'group_name'
+          key: 'group_name',
+          sortable: true
         },
         {
           title: '真实类库',
           align: 'center',
           key: 'api_class',
-          width: 190
+          width: 190,
+          sortable: true
         },
         {
           title: '接口映射',
@@ -284,7 +287,15 @@ export default {
           title: '接口请求量',
           align: 'center',
           key: 'hits',
-          width: 120
+          width: 150,
+          sortable: true
+        },
+        {
+          title: '所属用户',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          key: 'uid'
         },
         {
           title: '请求方式',

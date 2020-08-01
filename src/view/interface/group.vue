@@ -202,16 +202,24 @@ export default {
           }
         },
         {
-          title: '接口组请求量',
+          title: '请求量',
           align: 'center',
           key: 'hits',
-          width: 150
+          width: 150,
+          sortable: true
         },
         {
           title: '接口组标识',
           align: 'center',
           key: 'hash',
           width: 140
+        },
+        {
+          title: '所属用户',
+          align: 'center',
+          Width: 80,
+          sortable: true,
+          key: 'uid'
         },
         {
           title: '接口组状态',
