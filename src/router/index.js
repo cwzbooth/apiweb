@@ -11,6 +11,12 @@ const createRouter = () => new Router({
   routes
 })
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+
 const router = createRouter()
 
 router.beforeEach((to, from, next) => {

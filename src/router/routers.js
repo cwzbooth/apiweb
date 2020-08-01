@@ -55,7 +55,7 @@ export const otherRouter = [
           notCache: true,
           icon: 'md-home'
         },
-        component: () => import('@/view/single-page/home')
+        component: () => import('@/view/index/home')
       },
       {
         path: '/user-center',
@@ -67,7 +67,7 @@ export const otherRouter = [
           icon: 'md-home',
           access: 'admin/User/own'
         },
-        component: () => import('@/view/single-page/own/own.vue')
+        component: () => import('@/view/index/own/own.vue')
       }
     ]
   },

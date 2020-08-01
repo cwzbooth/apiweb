@@ -192,6 +192,7 @@ export default {
   data () {
     return {
       confirmRefresh: false,
+      refreshLoading: false,
       loading: false, // 树加载状态
       maxHeight: '',
       modalVisible: false, // 添加显示
