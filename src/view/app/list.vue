@@ -115,7 +115,7 @@ const editButton = (vm, h, currentRow, index) => {
       },
       on: {
         'click': () => {
-          getAll().then(response => {
+          getAll(currentRow.uid).then(response => {
             vm.appGroup = response.data.data.list
             vm.formItem.id = currentRow.id
             vm.formItem.uid = currentRow.uid
@@ -124,7 +124,7 @@ const editButton = (vm, h, currentRow, index) => {
             vm.formItem.app_id = currentRow.app_id
             vm.formItem.app_secret = currentRow.app_secret
             vm.formItem.app_group = currentRow.app_group
-            getAppInfo(currentRow.id).then(response => {
+            getAppInfo(currentRow.id, currentRow.uid).then(response => {
               let res = response.data
               vm.groupInfo = res.data.groupInfo
               vm.groupList = res.data.apiList

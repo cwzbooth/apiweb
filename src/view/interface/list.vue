@@ -69,7 +69,7 @@
         </FormItem>
         <FormItem label="接口分组" prop="group_hash">
           <Select v-model="formItem.group_hash" style="width:200px">
-            <Option v-for="(v, i) in apiGroup" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
+            <Option v-for="(v, i) in apiUserGroup" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
           </Select>
         </FormItem>
         <FormItem label="请求方式" prop="method">
@@ -163,6 +163,9 @@ const editButton = (vm, h, currentRow, index) => {
           vm.formItem.hash_type = currentRow.hash_type
           vm.modalSetting.show = true
           vm.modalSetting.index = index
+          getAll(currentRow.uid).then(response => {
+            vm.apiUserGroup = response.data.data.list
+          })
         }
       }
     }, vm.$t('edit_button'))
@@ -383,6 +386,7 @@ export default {
       ],
       tableData: [],
       apiGroup: [],
+      apiUserGroup: [],
       tableShow: {
         currentPage: 1,
         pageSize: 10,
@@ -446,13 +450,13 @@ export default {
     vm.hasRule('Fields/request').then(res => {
       vm.buttonShow.request = res
     })
-    getAll().then(response => {
+    getAll(vm.formItem.uid).then(response => {
       vm.apiGroup = response.data.data.list
     })
   },
   activated () {
     let vm = this
-    getAll().then(response => {
+    getAll(vm.formItem.uid).then(response => {
       vm.apiGroup = response.data.data.list
     })
   },

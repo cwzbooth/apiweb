@@ -6,16 +6,14 @@ import iView from 'view-design'
 import { setToken, getToken, setTitle } from '@/libs/util'
 import { oneOf } from '@/libs/tools'
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 Vue.use(Router)
 const createRouter = () => new Router({
   routes
 })
-
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
-
 
 const router = createRouter()
 

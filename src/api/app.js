@@ -27,12 +27,13 @@ export const refreshAppSecretApi = () => {
  * 获取应用权限信息
  * @returns {wx.RequestTask | never}
  */
-export const getAppInfo = (id) => {
+export const getAppInfo = (id, uid) => {
   return axios.request({
     url: 'App/getAppInfo',
     method: 'get',
     params: {
-      id: id
+      id: id,
+      uid: uid
     }
   })
 }

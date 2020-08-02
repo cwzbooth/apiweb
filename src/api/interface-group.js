@@ -44,10 +44,13 @@ export const changeStatus = (status, id) => {
  * @param data
  * @returns {wx.RequestTask | never}
  */
-export const getAll = () => {
+export const getAll = (uid) => {
   return axios.request({
     url: 'InterfaceGroup/getAll',
-    method: 'get'
+    method: 'get',
+    params: {
+      uid: uid
+    }
   })
 }
 

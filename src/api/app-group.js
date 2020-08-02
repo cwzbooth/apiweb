@@ -65,9 +65,12 @@ export const edit = (data) => {
   })
 }
 
-export const getAll = () => {
+export const getAll = (uid) => {
   return axios.request({
     url: 'AppGroup/getAll',
-    method: 'get'
+    method: 'get',
+    params: {
+      uid: uid
+    }
   })
 }
