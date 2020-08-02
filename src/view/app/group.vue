@@ -15,8 +15,8 @@
             </FormItem>
             <FormItem class="margin-bottom-0">
               <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
-                <Option :value="1">应用组标识</Option>
-                <Option :value="2">应用组名称</Option>
+                <Option :value="1">网站标识</Option>
+                <Option :value="2">网站名称</Option>
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
@@ -49,19 +49,36 @@
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
         <Icon type="md-alert"></Icon>
-        <span>{{formItem.id ? '编辑' : '新增'}}应用组</span>
+        <span>{{formItem.id ? '编辑' : '新增'}}网站</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
-        <FormItem label="组名称" prop="name">
-          <Input v-model="formItem.name" placeholder="请输入应用组名称"></Input>
+        <FormItem label="网站名称" prop="name">
+          <Input v-model="formItem.name" placeholder="请输入网站名称"></Input>
         </FormItem>
-        <FormItem label="组标识" prop="hash">
+        <FormItem label="网站标识" prop="hash">
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
           <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
-        <FormItem label="组描述" prop="description">
+        <FormItem label="网站链接" prop="siteroot">
+          <Row>
+              <Col span="6">
+                <Select v-model="formItem.http" prefix="ios-link" style="width: 120px;">
+                  <Option :value="1" >https://</Option>
+                  <Option :value="2">http://</Option>
+                </Select>
+              </Col>
+              <Col span="18">
+                <Input v-model="formItem.siteroot" placeholder="请输入网站链接"></Input>
+              </Col>
+               <Col span="24">
+                 <Tag color="error" class="margin-left-5">注意： 网站末尾必须要加 / </Tag>
+               </Col>
+          </Row>
+
+        </FormItem>
+        <FormItem label="网站描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
-                 placeholder="请输入应用组描述"></Input>
+                 placeholder="请输入网站描述"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -87,8 +104,10 @@ const editButton = (vm, h, currentRow, index) => {
       on: {
         'click': () => {
           vm.formItem.id = currentRow.id
+          vm.formItem.uid = currentRow.uid
           vm.formItem.name = currentRow.name
           vm.formItem.hash = currentRow.hash
+          vm.formItem.siteroot = currentRow.siteroot
           vm.formItem.description = currentRow.description
           vm.modalSetting.show = true
           vm.modalSetting.index = index
@@ -140,20 +159,26 @@ export default {
           align: 'center'
         },
         {
-          title: '应用组名称',
+          title: '网站名称',
           align: 'center',
           key: 'name'
         },
         {
-          title: '应用组描述',
+          title: '网站描述',
           align: 'center',
           key: 'description'
         },
         {
-          title: '应用组标识',
+          title: '网站标识',
           align: 'center',
           key: 'hash',
           width: 140
+        },
+        {
+          title: '网站地址',
+          align: 'center',
+          key: 'siteroot',
+          minWidth: 150
         },
         {
           title: '请求量',
@@ -165,12 +190,12 @@ export default {
         {
           title: '所属用户',
           align: 'center',
-          Width: 80,
+          width: 120,
           sortable: true,
           key: 'uid'
         },
         {
-          title: '应用组状态',
+          title: '网站状态',
           align: 'center',
           width: 120,
           render: (h, params) => {
@@ -235,11 +260,17 @@ export default {
         description: '',
         name: '',
         hash: '',
-        id: 0
+        http: 1,
+        siteroot: '',
+        id: 0,
+        uid: 0
       },
       ruleValidate: {
         name: [
-          { required: true, message: '应用组名称不能为空', trigger: 'blur' }
+          { required: true, message: '网站名称不能为空', trigger: 'blur' }
+        ],
+        siteroot: [
+          { required: true, message: '网站链接不能为空', trigger: 'blur' }
         ]
       },
       buttonShow: {
@@ -277,6 +308,7 @@ export default {
         if (valid) {
           vm.modalSetting.loading = true
           if (vm.formItem.id === 0) {
+            // vm.formItem.siteroot = vm.formItem.http + vm.formItem.siteroot
             add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()

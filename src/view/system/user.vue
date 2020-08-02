@@ -53,7 +53,9 @@
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
         <FormItem label="用户账号" prop="username">
-          <Input v-model="formItem.username" placeholder="请输入账号"></Input>
+          <Input v-model="formItem.username" disabled placeholder="请输入账号" v-if="formItem.id"></Input>
+          <Input v-model="formItem.username" placeholder="请输入账号" v-if="!formItem.id"></Input>
+          <Tag color="warning" class="margin-left-5">创建后不能修改</Tag>
         </FormItem>
         <FormItem label="用户昵称" prop="nickname">
           <Input v-model="formItem.nickname" placeholder="请输入昵称"></Input>
@@ -63,7 +65,7 @@
         </FormItem>
         <FormItem label="用户头像" prop="avatar">
           <div class="demo-upload-list" v-if="formItem.avatar">
-            <img :src="formItem.avatar">
+            <img :src="formItem.avatar" style="width: 3.125rem;">
             <div class="demo-upload-list-cover">
               <Icon type="ios-trash-outline" @click.native="handleImgRemove()"></Icon>
             </div>
@@ -95,6 +97,9 @@
         </FormItem>
         <FormItem label="活动链接" prop="activity_url" v-if="!formItem.id">
           <Input v-model="formItem.activity_url" placeholder="请输入活动链接"></Input>
+        </FormItem>
+        <FormItem label="活动链接ID" prop="wx_app_rid" v-if="!formItem.id">
+          <Input v-model="formItem.wx_app_rid" placeholder="请输入活动链接ID"></Input>
         </FormItem>
 
         <FormItem label="权限组" prop="group_id">
@@ -189,16 +194,18 @@ export default {
       uploadHeader: { 'apiAuth': getToken() },
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
-          align: 'center'
+          title: 'UID',
+          key: 'id',
+          width: 100,
+          align: 'center',
+          sortable: true
         },
         {
           title: '用户账号',
           align: 'center',
           key: 'username',
-          minWidth: 120
+          minWidth: 120,
+          sortable: true
         },
         {
           title: '用户昵称',
@@ -210,7 +217,8 @@ export default {
           title: '用户级别',
           align: 'center',
           key: 'leavel',
-          width: 160
+          width: 160,
+          sortable: true
         },
         {
           title: '登录次数',
@@ -309,6 +317,7 @@ export default {
         app_name: '',
         activity_name: '',
         activity_url: '',
+        wx_app_rid: '',
         id: 0
       },
       ruleValidate: {
@@ -332,6 +341,9 @@ export default {
         ],
         activity_url: [
           { required: true, message: '活动接口链接不能为空', trigger: 'blur' }
+        ],
+        wx_app_rid: [
+          { required: true, message: '活动接口ID不能为空', trigger: 'blur' }
         ]
       },
       buttonShow: {

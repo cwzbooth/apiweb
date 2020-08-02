@@ -152,6 +152,7 @@ const editButton = (vm, h, currentRow, index) => {
       on: {
         'click': () => {
           vm.formItem.id = currentRow.id
+          vm.formItem.uid = currentRow.uid
           vm.formItem.api_class = currentRow.api_class
           vm.formItem.info = currentRow.info
           vm.formItem.method = currentRow.method
@@ -406,7 +407,8 @@ export default {
         hash: '',
         access_token: 0,
         is_test: 0,
-        id: 0
+        id: 0,
+        uid: 0
       },
       ruleValidate: {
         api_class: [

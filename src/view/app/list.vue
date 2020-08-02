@@ -65,7 +65,7 @@
             <Button slot="append" icon="md-refresh" @click="refreshAppSecret"></Button>
           </Input>
         </FormItem>
-        <FormItem label="应用分组" prop="app_group">
+        <FormItem label="网站组" prop="app_group">
           <Select v-model="formItem.app_group" style="width:200px">
             <Option v-for="(v, i) in appGroup" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
           </Select>
@@ -118,6 +118,7 @@ const editButton = (vm, h, currentRow, index) => {
           getAll().then(response => {
             vm.appGroup = response.data.data.list
             vm.formItem.id = currentRow.id
+            vm.formItem.uid = currentRow.uid
             vm.formItem.app_name = currentRow.app_name
             vm.formItem.app_info = currentRow.app_info
             vm.formItem.app_id = currentRow.app_id
@@ -228,17 +229,24 @@ export default {
           sortable: true
         },
         {
+          title: '所属用户',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          key: 'uid'
+        },
+        {
+          title: '所属网站',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          key: 'app_group_name'
+        },
+        {
           title: '应用说明',
           align: 'center',
           key: 'app_info',
           width: 160
-        },
-        {
-          title: '所属用户',
-          align: 'center',
-          Width: 80,
-          sortable: true,
-          key: 'uid'
         },
         {
           title: '应用状态',
@@ -311,7 +319,8 @@ export default {
         app_info: '',
         app_api: {},
         app_group: 'default',
-        id: 0
+        id: 0,
+        uid: 0
       },
       ruleValidate: {
         app_name: [

@@ -85,6 +85,9 @@
         <FormItem label="应用接口地址" prop="apiUrl">
           <Input v-model="formItem.apiUrl" placeholder="请输入应用接口地址"></Input>
         </FormItem>
+        <FormItem label="应用接口ID" prop="wx_app_rid">
+          <Input v-model="formItem.wx_app_rid" placeholder="请输入应用接口ID"></Input>
+        </FormItem>
         <FormItem label="组描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
                  placeholder="请输入接口组描述"></Input>
@@ -115,8 +118,10 @@ const editButton = (vm, h, currentRow, index) => {
       on: {
         'click': () => {
           vm.formItem.id = currentRow.id
+          vm.formItem.uid = currentRow.uid
           vm.formItem.name = currentRow.name
           vm.formItem.apiUrl = currentRow.apiUrl
+          vm.formItem.wx_app_rid = currentRow.wx_app_rid
           vm.formItem.hash = currentRow.hash
           vm.formItem.image = currentRow.image
           vm.formItem.description = currentRow.description
@@ -182,6 +187,12 @@ export default {
           align: 'center',
           key: 'apiUrl',
           minWidth: 130
+        },
+        {
+          title: '接口地址ID',
+          align: 'center',
+          key: 'wx_app_rid',
+          width: 130
         },
         {
           title: '接口组描述',
@@ -289,14 +300,19 @@ export default {
         hash: '',
         apiUrl: '',
         image: '',
-        id: 0
+        wx_app_rid: '',
+        id: 0,
+        uid: 0
       },
       ruleValidate: {
+        name: [
+          { required: true, message: '接口组名称不能为空', trigger: 'blur' }
+        ],
         apiUrl: [
           { required: true, message: '应用接口地址不能为空', trigger: 'blur' }
         ],
-        name: [
-          { required: true, message: '接口组名称不能为空', trigger: 'blur' }
+        wx_app_rid: [
+          { required: true, message: '应用接口ID不能为空', trigger: 'blur' }
         ]
       },
       buttonShow: {
