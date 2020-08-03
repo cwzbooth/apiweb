@@ -198,6 +198,7 @@ export default {
           title: '网站状态',
           align: 'center',
           width: 120,
+          fixed: 'right',
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -232,6 +233,7 @@ export default {
           title: '操作',
           align: 'center',
           width: 200,
+          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),

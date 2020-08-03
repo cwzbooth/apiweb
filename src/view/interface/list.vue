@@ -254,13 +254,13 @@ export default {
       confirmRefresh: false,
       refreshLoading: false,
       columnsList: [
-        {
+        /** {
           title: '序号',
           type: 'index',
           width: 100,
           align: 'center',
           sortable: true
-        },
+        },**/
         {
           title: '接口名称',
           align: 'center',
@@ -340,6 +340,7 @@ export default {
           title: '接口状态',
           align: 'center',
           width: 130,
+          fixed: 'right',
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -374,6 +375,7 @@ export default {
           title: '操作',
           align: 'center',
           minWidth: 375,
+          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),
