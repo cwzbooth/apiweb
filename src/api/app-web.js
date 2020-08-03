@@ -1,12 +1,12 @@
 import axios from '@/libs/api.request'
 
 /**
- * 获取应用组数据
+ * 获取网站组数据
  * @returns {wx.RequestTask | never}
  */
 export const getList = (params) => {
   return axios.request({
-    url: 'AppGroup/index',
+    url: 'AppWeb/index',
     method: 'get',
     params: params
   })
@@ -14,7 +14,7 @@ export const getList = (params) => {
 
 export const del = (hash) => {
   return axios.request({
-    url: 'AppGroup/del',
+    url: 'AppWeb/del',
     method: 'get',
     params: {
       hash: hash
@@ -23,14 +23,14 @@ export const del = (hash) => {
 }
 
 /**
- * 显示/隐藏应用组
+ * 显示/隐藏网站组
  * @param status
  * @param id
  * @returns {wx.RequestTask | never}
  */
 export const changeStatus = (status, id) => {
   return axios.request({
-    url: 'AppGroup/changeStatus',
+    url: 'AppWeb/changeStatus',
     method: 'get',
     params: {
       status: status,
@@ -40,26 +40,26 @@ export const changeStatus = (status, id) => {
 }
 
 /**
- * 新增应用组
+ * 新增网站组
  * @param data
  * @returns {wx.RequestTask | never}
  */
 export const add = (data) => {
   return axios.request({
-    url: 'AppGroup/add',
+    url: 'AppWeb/add',
     method: 'post',
     data
   })
 }
 
 /**
- * 编辑应用组
+ * 编辑网站组
  * @param data
  * @returns {wx.RequestTask | never}
  */
 export const edit = (data) => {
   return axios.request({
-    url: 'AppGroup/edit',
+    url: 'AppWeb/edit',
     method: 'post',
     data
   })
@@ -67,17 +67,7 @@ export const edit = (data) => {
 
 export const getAll = (uid) => {
   return axios.request({
-    url: 'AppGroup/getAll',
-    method: 'get',
-    params: {
-      uid: uid
-    }
-  })
-}
-
-export const getWeb = (uid) => {
-  return axios.request({
-    url: 'AppGroup/getWeb',
+    url: 'AppWeb/getAll',
     method: 'get',
     params: {
       uid: uid

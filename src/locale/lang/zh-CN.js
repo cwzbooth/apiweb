@@ -17,6 +17,7 @@ export default {
   find_button: '查询',
   refresh_button: '刷新',
   delete_button: '删除',
+  to_button: '编辑',
   edit_button: '编辑',
   open_choose: '启用',
   close_choose: '禁用',

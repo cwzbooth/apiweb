@@ -86,25 +86,15 @@
             </div>
           </Upload>
         </FormItem>
-        <FormItem label="网站名称" prop="account_name" v-if="!formItem.id">
-          <Input v-model="formItem.account_name" placeholder="请输入网站名称"></Input>
+        <FormItem label="网站名称" prop="web_name" v-if="!formItem.id">
+          <Input v-model="formItem.web_name" placeholder="请输入网站名称"></Input>
         </FormItem>
         <FormItem label="网站链接" prop="siteroot" v-if="!formItem.id">
-          <Row>
-              <Col span="6">
-                <Select v-model="formItem.http" prefix="ios-link" style="width: 120px;">
-                  <Option :value="1" >https://</Option>
-                  <Option :value="2">http://</Option>
-                </Select>
-              </Col>
-              <Col span="18">
-                <Input v-model="formItem.siteroot" placeholder="请输入网站链接"></Input>
-              </Col>
-               <Col span="24">
-                 <Tag color="error" class="margin-left-5">注意： 网站末尾必须要加 / </Tag>
-               </Col>
-          </Row>
+            <Input v-model="formItem.siteroot" placeholder="请输入网站链接"></Input>
+        </FormItem>
 
+        <FormItem label="应用组名称" prop="account_name" v-if="!formItem.id">
+          <Input v-model="formItem.account_name" placeholder="请输入应用组名称"></Input>
         </FormItem>
         <FormItem label="应用名称" prop="app_name" v-if="!formItem.id">
           <Input v-model="formItem.app_name" placeholder="请输入应用名称"></Input>
@@ -115,8 +105,8 @@
         <FormItem label="活动链接" prop="activity_url" v-if="!formItem.id">
           <Input v-model="formItem.activity_url" placeholder="请输入活动链接"></Input>
         </FormItem>
-        <FormItem label="活动链接ID" prop="wx_app_rid" v-if="!formItem.id">
-          <Input v-model="formItem.wx_app_rid" placeholder="请输入活动链接ID"></Input>
+        <FormItem label="活动链接ID" prop="wxapp_rid" v-if="!formItem.id">
+          <Input v-model="formItem.wxapp_rid" placeholder="请输入活动链接ID"></Input>
         </FormItem>
 
         <FormItem label="权限组" prop="group_id">
@@ -155,6 +145,7 @@ const editButton = (vm, h, currentRow, index) => {
           vm.formItem.password = '123456'
           vm.formItem.avatar = currentRow.avatar
           vm.formItem.account_name = currentRow.account_name
+          vm.formItem.web_name = currentRow.web_name
           vm.formItem.http = currentRow.http
           vm.formItem.siteroot = currentRow.siteroot
 
@@ -334,12 +325,13 @@ export default {
         group_id: [],
         avatar: '',
         account_name: '',
+        web_name: '',
         http: 1,
         siteroot: '',
         app_name: '',
         activity_name: '',
         activity_url: '',
-        wx_app_rid: '',
+        wxapp_rid: '',
         id: 0
       },
       ruleValidate: {
@@ -352,11 +344,14 @@ export default {
         password: [
           { required: true, message: '用户密码不能为空', trigger: 'blur' }
         ],
-        account_name: [
+        web_name: [
           { required: true, message: '网站名称不能为空', trigger: 'blur' }
         ],
         siteroot: [
           { required: true, message: '网站链接不能为空', trigger: 'blur' }
+        ],
+        account_name: [
+          { required: true, message: '应用组名称不能为空', trigger: 'blur' }
         ],
         app_name: [
           { required: true, message: '应用名称不能为空', trigger: 'blur' }
@@ -367,7 +362,7 @@ export default {
         activity_url: [
           { required: true, message: '活动接口链接不能为空', trigger: 'blur' }
         ],
-        wx_app_rid: [
+        wxapp_rid: [
           { required: true, message: '活动接口ID不能为空', trigger: 'blur' }
         ]
       },
@@ -406,7 +401,7 @@ export default {
         if (valid) {
           vm.modalSetting.loading = true
           if (vm.formItem.id === 0) {
-            vm.formItem.siteroot = (vm.formItem.http == 1) ? 'https://' + vm.formItem.siteroot : 'http://' + vm.formItem.siteroot
+            // vm.formItem.siteroot = (vm.formItem.http === 1) ? 'https://' + vm.formItem.siteroot : 'http://' + vm.formItem.siteroot
             add(vm.formItem).then(response => {
               vm.$Message.success(response.data.msg)
               vm.getList()

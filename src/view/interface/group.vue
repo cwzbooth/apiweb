@@ -14,9 +14,11 @@
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
-              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
+              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:150px">
                 <Option :value="1">接口组标识</Option>
                 <Option :value="2">接口组名称</Option>
+                <Option :value="3">所属应用AppId</Option>
+                <Option :value="4">所属用户UID</Option>
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
@@ -82,11 +84,16 @@
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
           <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
+        <FormItem label="所属应用" prop="app_id">
+          <Select v-model="formItem.app_id" style="width:200px">
+            <Option v-for="(v, i) in appId" :value="v.app_id" :kk="i" :key="v.app_id"> {{v.app_name}}</Option>
+          </Select>
+        </FormItem>
         <FormItem label="应用接口地址" prop="apiUrl">
           <Input v-model="formItem.apiUrl" placeholder="请输入应用接口地址"></Input>
         </FormItem>
-        <FormItem label="应用接口ID" prop="wx_app_rid">
-          <Input v-model="formItem.wx_app_rid" placeholder="请输入应用接口ID"></Input>
+        <FormItem label="应用接口ID" prop="wxapp_rid">
+          <Input v-model="formItem.wxapp_rid" placeholder="请输入应用接口ID"></Input>
         </FormItem>
         <FormItem label="组描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
@@ -102,6 +109,7 @@
 </template>
 <script>
 import { getList, changeStatus, add, edit, del } from '@/api/interface-group'
+import { getAppId } from '@/api/app'
 import { baseUrl } from '@/libs/api.request'
 import { getToken } from '@/libs/util'
 import { getHash } from '@/api/interface'
@@ -117,16 +125,20 @@ const editButton = (vm, h, currentRow, index) => {
       },
       on: {
         'click': () => {
-          vm.formItem.id = currentRow.id
-          vm.formItem.uid = currentRow.uid
-          vm.formItem.name = currentRow.name
-          vm.formItem.apiUrl = currentRow.apiUrl
-          vm.formItem.wx_app_rid = currentRow.wx_app_rid
-          vm.formItem.hash = currentRow.hash
-          vm.formItem.image = currentRow.image
-          vm.formItem.description = currentRow.description
-          vm.modalSetting.show = true
-          vm.modalSetting.index = index
+          getAppId(currentRow.uid).then(response => {
+            vm.appId = response.data.data.list
+            vm.formItem.id = currentRow.id
+            vm.formItem.uid = currentRow.uid
+            vm.formItem.name = currentRow.name
+            vm.formItem.apiUrl = currentRow.apiUrl
+            vm.formItem.wxapp_rid = currentRow.wxapp_rid
+            vm.formItem.hash = currentRow.hash
+            vm.formItem.image = currentRow.image
+            vm.formItem.app_id = currentRow.app_id
+            vm.formItem.description = currentRow.description
+            vm.modalSetting.show = true
+            vm.modalSetting.index = index
+          })
         }
       }
     }, vm.$t('edit_button'))
@@ -170,6 +182,7 @@ export default {
     return {
       uploadUrl: baseUrl + 'Index/upload',
       uploadHeader: { 'apiAuth': getToken() },
+      appId: [],
       columnsList: [
         {
           title: '序号',
@@ -191,7 +204,7 @@ export default {
         {
           title: '接口地址ID',
           align: 'center',
-          key: 'wx_app_rid',
+          key: 'wxapp_rid',
           width: 130
         },
         {
@@ -226,11 +239,24 @@ export default {
           width: 140
         },
         {
+          title: '所属应用',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          render: (h, params) => {
+            let app = params.row.app_name + '   (' + params.row.app_id + ')'
+            return h('span', app)
+          }
+        },
+        {
           title: '所属用户',
           align: 'center',
-          Width: 80,
+          width: 120,
           sortable: true,
-          key: 'uid'
+          render: (h, params) => {
+            let username = params.row.username + '   (' + params.row.uid + ')'
+            return h('span', username)
+          }
         },
         {
           title: '接口组状态',
@@ -302,7 +328,8 @@ export default {
         hash: '',
         apiUrl: '',
         image: '',
-        wx_app_rid: '',
+        wxapp_rid: '',
+        app_id: '',
         id: 0,
         uid: 0
       },
@@ -310,10 +337,13 @@ export default {
         name: [
           { required: true, message: '接口组名称不能为空', trigger: 'blur' }
         ],
+        app_id: [
+          { required: true, message: '所属应用不能为空', trigger: 'blur' }
+        ],
         apiUrl: [
           { required: true, message: '应用接口地址不能为空', trigger: 'blur' }
         ],
-        wx_app_rid: [
+        wxapp_rid: [
           { required: true, message: '应用接口ID不能为空', trigger: 'blur' }
         ]
       },
@@ -341,6 +371,9 @@ export default {
   methods: {
     alertAdd () {
       let vm = this
+      getAppId().then(response => {
+        vm.appId = response.data.data.list
+      })
       getHash().then(response => {
         vm.formItem.hash = response.data.data.hash
       })
@@ -349,6 +382,7 @@ export default {
     submit () {
       let vm = this
       this.$refs['myForm'].validate((valid) => {
+        console.log(this)
         if (valid) {
           vm.modalSetting.loading = true
           if (vm.formItem.id === 0) {

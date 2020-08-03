@@ -14,9 +14,11 @@
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
-              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
+              <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:150px">
                 <Option :value="1">AppId</Option>
                 <Option :value="2">应用名称</Option>
+                <Option :value="3">所属应用组标识</Option>
+                <Option :value="4">所属用户UID</Option>
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
@@ -65,7 +67,7 @@
             <Button slot="append" icon="md-refresh" @click="refreshAppSecret"></Button>
           </Input>
         </FormItem>
-        <FormItem label="网站组" prop="app_group">
+        <FormItem label="应用组" prop="app_group">
           <Select v-model="formItem.app_group" style="width:200px">
             <Option v-for="(v, i) in appGroup" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
           </Select>
@@ -233,14 +235,20 @@ export default {
           align: 'center',
           width: 120,
           sortable: true,
-          key: 'uid'
+          render: (h, params) => {
+            let username = params.row.username + '   (' + params.row.uid + ')'
+            return h('span', username)
+          }
         },
         {
-          title: '所属网站',
+          title: '所属应用组',
           align: 'center',
-          width: 120,
+          width: 150,
           sortable: true,
-          key: 'app_group_name'
+          render: (h, params) => {
+            let app = params.row.app_group_name + '   (' + params.row.app_group + ')'
+            return h('span', app)
+          }
         },
         {
           title: '应用说明',
@@ -332,6 +340,7 @@ export default {
       checkAllStatus: {},
       checkAllIndeterminate: {},
       buttonShow: {
+        to: true,
         edit: true,
         del: true,
         changeStatus: true

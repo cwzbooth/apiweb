@@ -107,21 +107,15 @@ export default {
           }
         },
         {
+          title: '来源',
+          align: 'center',
+          key: 'from_url',
+          minWidth: 50
+        },
+        {
           title: 'platform',
           align: 'center',
           key: 'platform',
-          minWidth: 50
-        },
-        {
-          title: 'system',
-          align: 'center',
-          key: 'system',
-          minWidth: 50
-        },
-        {
-          title: 'language',
-          align: 'center',
-          key: 'language',
           minWidth: 50
         },
         {

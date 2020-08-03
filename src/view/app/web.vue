@@ -15,10 +15,8 @@
             </FormItem>
             <FormItem class="margin-bottom-0">
               <Select v-model="searchConf.type" clearable placeholder="请选择类别" style="width:120px">
-                <Option :value="1">应用组标识</Option>
-                <Option :value="2">应用组名称</Option>
-                <Option :value="3">所属网站标识</Option>
-                <Option :value="4">所属用户UID</Option>
+                <Option :value="1">网站标识</Option>
+                <Option :value="2">网站名称</Option>
               </Select>
             </FormItem>
             <FormItem class="margin-bottom-0">
@@ -35,7 +33,7 @@
       <Col span="24">
         <Card>
           <div class="margin-bottom-15">
-            <Button type="primary" v-has="'AppGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
+            <Button type="primary" v-has="'AppWeb/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
             <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
@@ -51,24 +49,22 @@
     <Modal v-model="modalSetting.show" width="668" :styles="{top: '30px'}" @on-visible-change="doCancel">
       <p slot="header" style="color:#2d8cf0">
         <Icon type="md-alert"></Icon>
-        <span>{{formItem.id ? '编辑' : '新增'}}应用组</span>
+        <span>{{formItem.id ? '编辑' : '新增'}}网站</span>
       </p>
       <Form ref="myForm" :rules="ruleValidate" :model="formItem" :label-width="80">
-        <FormItem label="应用组名称" prop="name">
-          <Input v-model="formItem.name" placeholder="请输入应用组名称"></Input>
+        <FormItem label="网站名称" prop="name">
+          <Input v-model="formItem.name" placeholder="请输入网站名称"></Input>
         </FormItem>
-        <FormItem label="应用组标识" prop="hash">
+        <FormItem label="网站标识" prop="hash">
           <Input style="width: 300px" disabled v-model="formItem.hash"></Input>
           <Tag color="error" class="margin-left-5">系统自动生成，不允许修改</Tag>
         </FormItem>
-        <FormItem label="所属网站" prop="app_web">
-          <Select v-model="formItem.app_web" style="width:200px">
-            <Option v-for="(v, i) in appWeb" :value="v.hash" :kk="i" :key="v.hash"> {{v.name}}</Option>
-          </Select>
+        <FormItem label="网站链接" prop="siteroot">
+          <Input v-model="formItem.siteroot" placeholder="请输入网站链接"></Input>
         </FormItem>
-        <FormItem label="应用组描述" prop="description">
+        <FormItem label="网站描述" prop="description">
           <Input v-model="formItem.description" :autosize="{maxRows: 10, minRows: 4}" type="textarea"
-                 placeholder="请输入应用组描述"></Input>
+                 placeholder="请输入网站描述"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -79,7 +75,7 @@
   </div>
 </template>
 <script>
-import { getList, changeStatus, add, edit, del, getWeb } from '@/api/app-group'
+import { getList, changeStatus, add, edit, del } from '@/api/app-web'
 import { getHash } from '@/api/interface'
 
 const editButton = (vm, h, currentRow, index) => {
@@ -93,21 +89,14 @@ const editButton = (vm, h, currentRow, index) => {
       },
       on: {
         'click': () => {
-          getWeb(currentRow.uid).then(response => {
-            vm.appWeb = response.data.data.list
-            vm.formItem.id = currentRow.id
-            vm.formItem.uid = currentRow.uid
-            vm.formItem.hits = currentRow.hits
-            vm.formItem.name = currentRow.name
-            vm.formItem.hash = currentRow.hash
-            vm.formItem.app_web = currentRow.app_web
-            vm.formItem.app_web_name = currentRow.app_web_name
-            vm.formItem.siteroot = currentRow.siteroot
-            vm.formItem.description = currentRow.description
-            vm.formItem.app_web = currentRow.app_web
-            vm.modalSetting.show = true
-            vm.modalSetting.index = index
-          })
+          vm.formItem.id = currentRow.id
+          vm.formItem.uid = currentRow.uid
+          vm.formItem.name = currentRow.name
+          vm.formItem.hash = currentRow.hash
+          vm.formItem.siteroot = currentRow.siteroot
+          vm.formItem.description = currentRow.description
+          vm.modalSetting.show = true
+          vm.modalSetting.index = index
         }
       }
     }, vm.$t('edit_button'))
@@ -148,48 +137,34 @@ export default {
   name: 'interface_group',
   data () {
     return {
-      appWeb: [],
       columnsList: [
         {
           title: '序号',
           type: 'index',
           width: 65,
-          align: 'center',
-          sortable: true
+          align: 'center'
         },
         {
-          title: '应用组名称',
+          title: '网站名称',
           align: 'center',
           key: 'name'
         },
         {
-          title: '应用组描述',
+          title: '网站描述',
           align: 'center',
           key: 'description'
         },
         {
-          title: '应用组标识',
+          title: '网站标识',
           align: 'center',
           key: 'hash',
-          width: 140,
-          sortable: true
-        },
-        {
-          title: '所属网站',
-          align: 'center',
-          minWidth: 150,
-          sortable: true,
-          render: (h, params) => {
-            let web = params.row.app_web_name + '   (' + params.row.app_web + ')'
-            return h('span', web)
-          }
+          width: 140
         },
         {
           title: '网站地址',
           align: 'center',
           key: 'siteroot',
-          minWidth: 150,
-          sortable: true
+          minWidth: 150
         },
         {
           title: '请求量',
@@ -203,13 +178,10 @@ export default {
           align: 'center',
           width: 120,
           sortable: true,
-          render: (h, params) => {
-            let username = params.row.username + '   (' + params.row.uid + ')'
-            return h('span', username)
-          }
+          key: 'uid'
         },
         {
-          title: '应用组状态',
+          title: '网站状态',
           align: 'center',
           width: 120,
           fixed: 'right',
@@ -279,16 +251,14 @@ export default {
         http: 1,
         siteroot: '',
         id: 0,
-        uid: 0,
-        hits: 0,
-        app_web: ''
+        uid: 0
       },
       ruleValidate: {
         name: [
-          { required: true, message: '应用组名称不能为空', trigger: 'blur' }
+          { required: true, message: '网站名称不能为空', trigger: 'blur' }
         ],
         siteroot: [
-          { required: true, message: '应用组链接不能为空', trigger: 'blur' }
+          { required: true, message: '网站链接不能为空', trigger: 'blur' }
         ]
       },
       buttonShow: {
@@ -302,22 +272,19 @@ export default {
   created () {
     let vm = this
     vm.getList()
-    vm.hasRule('AppGroup/edit').then(res => {
+    vm.hasRule('AppWeb/edit').then(res => {
       vm.buttonShow.edit = res
     })
-    vm.hasRule('AppGroup/del').then(res => {
+    vm.hasRule('AppWeb/del').then(res => {
       vm.buttonShow.del = res
     })
-    vm.hasRule('AppGroup/changeStatus').then(res => {
+    vm.hasRule('AppWeb/changeStatus').then(res => {
       vm.buttonShow.changeStatus = res
     })
   },
   methods: {
     alertAdd () {
       let vm = this
-      getWeb().then(response => {
-        vm.appWeb = response.data.data.list
-      })
       getHash().then(response => {
         vm.formItem.hash = response.data.data.hash
       })

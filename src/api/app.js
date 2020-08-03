@@ -90,3 +90,13 @@ export const edit = (data) => {
     data
   })
 }
+
+export const getAppId = (uid) => {
+  return axios.request({
+    url: 'App/getAppId',
+    method: 'get',
+    params: {
+      uid: uid
+    }
+  })
+}
