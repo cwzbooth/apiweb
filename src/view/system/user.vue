@@ -401,7 +401,7 @@ export default {
         username: '',
         nickname: '',
         password: '',
-        group_id: [],
+        group_id: ['2'],
         avatar: '',
         account_name: '',
         web_name: '',

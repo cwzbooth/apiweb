@@ -55,7 +55,7 @@ export default {
     return {
       columnsList: [
         {
-          title: 'D',
+          title: '',
           type: 'expand',
           width: 50,
           render: (h, params) => {
@@ -70,26 +70,41 @@ export default {
           title: '用户名',
           align: 'center',
           key: 'username',
-          width: 85
-        },
-        {
-          title: '头像',
-          align: 'center',
-          width: 100,
+          width: 150,
+          sortable: true,
           render: (h, params) => {
-            return h('img', {
-              attrs: {
-                class: 'avatar',
-                src: params.row.avatar
-              }
-            })
+            return h('Row', [
+              h('Col', {
+                attrs: {
+                  span: 8
+                }
+              }, [
+                h('Avatar', {
+                  attrs: {
+                    src: params.row.avatar,
+                    size: 'large'
+                  }
+                }, params.row.username)
+              ]),
+              h('Col', {
+                attrs: {
+                  span: 16
+                }
+              }, [
+                h('Col', {
+                  attrs: {
+                    style: 'color:#17233d'
+                  }
+                }, params.row.username),
+                h('Col', {
+                  attrs: {
+                    style: 'color:#808695'
+                  }
+                }, params.row.openid)
+              ])
+
+            ])
           }
-        },
-        {
-          title: 'Openid',
-          align: 'center',
-          key: 'openid',
-          minWidth: 50
         },
         {
           title: 'UUID',
@@ -98,45 +113,90 @@ export default {
           minWidth: 130
         },
         {
-          title: '应用名称',
+          title: '接口',
           align: 'center',
-          key: 'app_name',
-          minWidth: 130,
+          key: 'hash',
+          width: 200,
+          sortable: true,
           render: (h, params) => {
-            return h('span', params.row.app_name + '  (接口：' + params.row.api_class + ')')
+            return h('Row', [
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.api_class)
+
+              ]),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, '映射：  ' + params.row.hash)
+
+              ])
+            ])
           }
         },
         {
           title: '来源',
           align: 'center',
-          key: 'from_url',
-          minWidth: 50
-        },
-        {
-          title: 'platform',
-          align: 'center',
+          width: 260,
           key: 'platform',
-          minWidth: 50
-        },
-        {
-          title: 'model',
-          align: 'center',
-          key: 'model',
-          minWidth: 50
-        },
-        {
-          title: '发送时间',
-          align: 'center',
-          width: 170,
+          sortable: true,
           render: (h, params) => {
-            return h('span', getDate(params.row.create_time, 'year'))
+            return h('Row', [
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.type),
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.platform),
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.system),
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.model)
+
+              ]),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.from_url)
+              ])
+            ])
           }
         },
         {
-          title: 'ip',
+          title: '发送IP/时间',
           align: 'center',
-          key: 'create_ip',
-          minWidth: 100
+          width: 180,
+          key: 'uid',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, params.row.create_ip)
+
+              ]),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                  }
+                }, getDate(params.row.create_time, 'year'))
+
+              ])
+            ])
+          }
         }
       ],
       tableData: [],
@@ -161,7 +221,7 @@ export default {
       listLoading: false
     }
   },
-  created () {
+  created (e) {
     let vm = this
     vm.getList()
     vm.hasRule('Count/del').then(res => {
@@ -183,7 +243,10 @@ export default {
     },
     getList () {
       let vm = this
+      console.log(vm)
       let params = {
+        hash: vm.$route.query.hash || '',
+        group_hash: vm.$route.query.group_hash || '',
         page: vm.tableShow.currentPage,
         size: vm.tableShow.pageSize,
         type: vm.searchConf.type,

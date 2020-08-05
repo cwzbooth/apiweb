@@ -144,10 +144,7 @@ const editButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.edit) {
     return h('Button', {
       props: {
-        type: 'primary'
-      },
-      style: {
-        margin: '0 5px'
+
       },
       on: {
         'click': () => {
@@ -173,30 +170,27 @@ const editButton = (vm, h, currentRow, index) => {
 }
 const deleteButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.del) {
-    return h('Poptip', {
+    return h('Button', {
       props: {
-        confirm: true,
-        title: '您确定要删除这条数据吗? ',
-        transfer: true
-      },
-      on: {
-        'on-ok': () => {
-          del(currentRow.hash).then(response => {
-            currentRow.loading = false
-            vm.tableData.splice(index, 1)
-            vm.$Message.success(response.data.msg)
-          })
-        }
+        type: 'error',
+        placement: 'top',
+        loading: currentRow.isDeleting
       }
     }, [
-      h('Button', {
-        style: {
-          margin: '0 5px'
-        },
+      h('Poptip', {
         props: {
-          type: 'error',
-          placement: 'top',
-          loading: currentRow.isDeleting
+          confirm: true,
+          title: '您确定要删除这条数据吗? ',
+          transfer: true
+        },
+        on: {
+          'on-ok': () => {
+            del(currentRow.hash).then(response => {
+              currentRow.loading = false
+              vm.tableData.splice(index, 1)
+              vm.$Message.success(response.data.msg)
+            })
+          }
         }
       }, vm.$t('delete_button'))
     ])
@@ -206,10 +200,8 @@ const requestButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.request) {
     return h('Button', {
       style: {
-        margin: '0 5px'
       },
       props: {
-        type: 'info',
         placement: 'top',
         loading: currentRow.isDeleting
       },
@@ -228,10 +220,8 @@ const responseButton = (vm, h, currentRow, index) => {
   if (vm.buttonShow.response) {
     return h('Button', {
       style: {
-        margin: '0 5px'
       },
       props: {
-        type: 'warning',
         placement: 'top',
         loading: currentRow.isDeleting
       },
@@ -244,6 +234,29 @@ const responseButton = (vm, h, currentRow, index) => {
         }
       }
     }, '返回参数')
+  }
+}
+const countPostList = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.countPostList) {
+    return h('Button', {
+      style: {
+      },
+      props: {
+        shape: 'circle',
+        size: 'small',
+        type: 'warning',
+        placement: 'top',
+        loading: currentRow.isDeleting
+      },
+      on: {
+        click: () => {
+          let hash = currentRow.hash
+          vm.$router.push({
+            path: `/analytics/count?hash=${hash}`
+          })
+        }
+      }
+    }, currentRow.hits)
   }
 }
 
@@ -287,7 +300,12 @@ export default {
           align: 'center',
           key: 'hits',
           width: 100,
-          sortable: true
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              countPostList(this, h, params.row, params.index)
+            ])
+          }
         },
         {
           title: '接口组',
@@ -396,15 +414,27 @@ export default {
         },
         {
           title: '操作',
-          align: 'center',
-          width: 375,
+          align: 'left',
+          width: 330,
           fixed: 'right',
           render: (h, params) => {
-            return h('div', [
-              editButton(this, h, params.row, params.index),
-              requestButton(this, h, params.row, params.index),
-              responseButton(this, h, params.row, params.index),
-              deleteButton(this, h, params.row, params.index)
+            return h('Row', [
+              h('Col', {
+                attrs: {
+                  style: 'margin:10px 0 5px 0'
+                }
+              }, [
+                h('ButtonGroup', {
+                  attrs: {
+                    shape: 'circle'
+                  }
+                }, [
+                  editButton(this, h, params.row, params.index),
+                  responseButton(this, h, params.row, params.index),
+                  requestButton(this, h, params.row, params.index),
+                  deleteButton(this, h, params.row, params.index)
+                ])
+              ])
             ])
           }
         }
@@ -452,7 +482,8 @@ export default {
         request: true,
         response: true,
         del: true,
-        changeStatus: true
+        changeStatus: true,
+        countPostList: true
       },
       listLoading: false
     }

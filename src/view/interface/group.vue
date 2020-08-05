@@ -175,7 +175,28 @@ const deleteButton = (vm, h, currentRow, index) => {
     ])
   }
 }
-
+const countPostList = (vm, h, currentRow, index) => {
+  if (vm.buttonShow.countPostList) {
+    return h('Button', {
+      style: {
+      },
+      props: {
+        shape: 'circle',
+        size: 'small',
+        type: 'warning',
+        placement: 'top'
+      },
+      on: {
+        click: () => {
+          let hash = currentRow.hash
+          vm.$router.push({
+            path: `/analytics/count?group_hash=${hash}`
+          })
+        }
+      }
+    }, currentRow.hits)
+  }
+}
 export default {
   name: 'interface_group',
   data () {
@@ -244,7 +265,13 @@ export default {
           align: 'center',
           key: 'hits',
           width: 100,
-          sortable: true
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              countPostList(this, h, params.row, params.index)
+
+            ])
+          }
         },
         {
           title: '接口',
@@ -380,7 +407,8 @@ export default {
       buttonShow: {
         edit: true,
         del: true,
-        changeStatus: true
+        changeStatus: true,
+        countPostList: true
       },
       listLoading: false
     }
