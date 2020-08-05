@@ -38,7 +38,7 @@
             <Button type="primary" v-has="'InterfaceGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" stripe border></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -149,7 +149,7 @@ const deleteButton = (vm, h, currentRow, index) => {
     return h('Poptip', {
       props: {
         confirm: true,
-        title: '您确定要删除此接口分组么? 如当前分组下仍有接口，将自动划归于默认分组！',
+        title: '您确定要删除此接口分组么? ',
         transfer: true
       },
       on: {
@@ -185,37 +185,51 @@ export default {
       appId: [],
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
-          align: 'center'
+          title: '标识',
+          align: 'center',
+          key: 'hash',
+          width: 140,
+          sortable: true,
+          render: (h, params) => {
+            return h('Tag', {
+              attrs: {
+                color: 'success'
+              }
+            }, params.row.hash)
+          }
         },
         {
           title: '接口组名称',
           align: 'center',
-          key: 'name'
+          width: 180,
+          key: 'name',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.name),
+              h('Col', params.row.description)
+            ])
+          }
         },
         {
-          title: '接口地址',
+          title: '远程接口地址',
           align: 'center',
           key: 'apiUrl',
-          minWidth: 130
+          minWidth: 200,
+          sortable: true
         },
         {
-          title: '接口地址ID',
+          title: '远程接口ID',
           align: 'center',
           key: 'wxapp_rid',
-          width: 130
+          width: 140,
+          sortable: true
         },
         {
-          title: '接口组描述',
+          title: '热度',
           align: 'center',
-          key: 'description'
-        },
-        {
-          title: '接口组热度',
-          align: 'center',
-          width: 120,
+          width: 100,
+          sortable: true,
           render: (h, params) => {
             if (params.row.hot > 10000) {
               let hot = (parseInt(params.row.hot) / 10000).toFixed(1) + '万'
@@ -229,33 +243,49 @@ export default {
           title: '请求量',
           align: 'center',
           key: 'hits',
-          width: 150,
+          width: 100,
           sortable: true
         },
         {
-          title: '接口组标识',
+          title: '接口',
           align: 'center',
-          key: 'hash',
-          width: 140
+          key: 'num_interface',
+          width: 100,
+          sortable: true
         },
         {
           title: '所属应用',
           align: 'center',
-          width: 120,
+          width: 180,
+          key: 'app_id',
           sortable: true,
           render: (h, params) => {
-            let app = params.row.app_name + '   (' + params.row.app_id + ')'
-            return h('span', app)
+            return h('Row', [
+              h('Col', params.row.app_name),
+              h('Col', [
+                h('Tag', params.row.app_id)
+              ])
+            ])
           }
         },
         {
           title: '所属用户',
           align: 'center',
-          width: 120,
+          width: 150,
+          key: 'uid',
           sortable: true,
           render: (h, params) => {
-            let username = params.row.username + '   (' + params.row.uid + ')'
-            return h('span', username)
+            return h('Row', [
+              h('Col', params.row.username),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                    color: 'warning'
+                  }
+                }, params.row.uid)
+
+              ])
+            ])
           }
         },
         {
@@ -309,7 +339,7 @@ export default {
       tableData: [],
       tableShow: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 20,
         listCount: 0
       },
       searchConf: {

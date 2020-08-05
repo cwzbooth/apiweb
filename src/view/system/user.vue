@@ -36,7 +36,7 @@
             <Button type="primary" v-has="'User/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border stripe></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -175,6 +175,7 @@ const deleteButton = (vm, h, currentRow, index) => {
       on: {
         'on-ok': () => {
           del(currentRow.id).then(response => {
+            console.log(response)
             vm.tableData.splice(index, 1)
             vm.$Message.success(response.data.msg)
           })
@@ -209,26 +210,102 @@ export default {
           key: 'id',
           width: 100,
           align: 'center',
-          sortable: true
+          sortable: true,
+          render: (h, params) => {
+            return h('Tag', {
+              attrs: {
+                color: 'success'
+              }
+            }, params.row.id)
+          }
         },
         {
           title: '用户账号',
           align: 'center',
           key: 'username',
-          minWidth: 120,
+          minWidth: 150,
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', {
+                attrs: {
+                  span: 8
+                }
+              }, [
+                h('Avatar', {
+                  attrs: {
+                    src: params.row.avatar,
+                    size: 'large'
+                  }
+                }, params.row.username)
+              ]),
+              h('Col', {
+                attrs: {
+                  span: 16
+                }
+              }, [
+                h('Col', {
+                  attrs: {
+                    style: 'color:#17233d'
+                  }
+                }, params.row.username),
+                h('Col', {
+                  attrs: {
+                    style: 'color:#808695'
+                  }
+                }, params.row.nickname)
+              ])
+
+            ])
+          }
+        },
+        {
+          title: '级别',
+          align: 'center',
+          key: 'leavel',
+          width: 100,
           sortable: true
         },
         {
-          title: '用户昵称',
+          title: '请求量',
           align: 'center',
-          key: 'nickname',
-          width: 160
+          key: 'hits',
+          width: 100,
+          sortable: true
         },
         {
-          title: '用户级别',
+          title: '网站',
           align: 'center',
-          key: 'leavel',
-          width: 160,
+          key: 'num_app_web',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '应用组',
+          align: 'center',
+          key: 'num_app_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '应用',
+          align: 'center',
+          key: 'num_app',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口组',
+          align: 'center',
+          key: 'num_interface_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口',
+          align: 'center',
+          key: 'num_interface',
+          width: 100,
           sortable: true
         },
         {
@@ -259,6 +336,7 @@ export default {
           title: '状态',
           align: 'center',
           width: 100,
+          fixed: 'right',
           render: (h, params) => {
             let vm = this
             return h('i-switch', {
@@ -293,6 +371,7 @@ export default {
           title: '操作',
           align: 'center',
           width: 200,
+          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               editButton(this, h, params.row, params.index),

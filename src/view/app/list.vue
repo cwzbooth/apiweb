@@ -38,7 +38,7 @@
             <Button type="primary" v-has="'App/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border stripe></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -200,28 +200,30 @@ export default {
       appGroup: [],
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
-          align: 'center'
-        },
-        {
-          title: '应用名称',
+          title: '接口组名称',
           align: 'center',
+          minWidth: 180,
           key: 'app_name',
-          minWidth: 130
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.app_name),
+              h('Col', params.row.app_info)
+            ])
+          }
         },
         {
           title: 'AppId',
           align: 'center',
           key: 'app_id',
-          width: 120
+          width: 150,
+          sortable: true
         },
         {
           title: 'AppSecret',
           align: 'center',
           key: 'app_secret',
-          minWidth: 285
+          width: 350
         },
         {
           title: '请求量',
@@ -231,30 +233,53 @@ export default {
           sortable: true
         },
         {
-          title: '所属用户',
+          title: '接口组',
           align: 'center',
-          width: 120,
-          sortable: true,
-          render: (h, params) => {
-            let username = params.row.username + '   (' + params.row.uid + ')'
-            return h('span', username)
-          }
+          key: 'num_interface_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口',
+          align: 'center',
+          key: 'num_interface',
+          width: 100,
+          sortable: true
         },
         {
           title: '所属应用组',
           align: 'center',
-          width: 150,
+          width: 180,
+          key: 'app_group',
           sortable: true,
           render: (h, params) => {
-            let app = params.row.app_group_name + '   (' + params.row.app_group + ')'
-            return h('span', app)
+            return h('Row', [
+              h('Col', params.row.app_group_name),
+              h('Col', [
+                h('Tag', params.row.app_group)
+              ])
+            ])
           }
         },
         {
-          title: '应用说明',
+          title: '所属用户',
           align: 'center',
-          key: 'app_info',
-          width: 160
+          width: 150,
+          key: 'uid',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.username),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                    color: 'warning'
+                  }
+                }, params.row.uid)
+
+              ])
+            ])
+          }
         },
         {
           title: '应用状态',
@@ -309,7 +334,7 @@ export default {
       groupList: {},
       tableShow: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 20,
         listCount: 0
       },
       searchConf: {

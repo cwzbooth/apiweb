@@ -26,7 +26,15 @@ class HttpRequest {
           setToken('')
           router.push({ name: 'login' })
         } else {
-          iView.Message.error(data.msg)
+        //   iView.Message.error({
+        //     content: data.msg,
+        //     duration: 3
+        //   })
+          iView.Notice.error({
+            title: '操作失败',
+            desc: data.msg,
+            duration: 10
+          })
         }
         throw new Error(data.msg)
       } else {

@@ -36,7 +36,7 @@
             <Button type="primary" v-has="'AppWeb/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border stripe></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -139,26 +139,31 @@ export default {
     return {
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
-          align: 'center'
+          title: '标识',
+          align: 'center',
+          key: 'hash',
+          width: 140,
+          sortable: true,
+          render: (h, params) => {
+            return h('Tag', {
+              attrs: {
+                color: 'success'
+              }
+            }, params.row.hash)
+          }
         },
         {
           title: '网站名称',
           align: 'center',
-          key: 'name'
-        },
-        {
-          title: '网站描述',
-          align: 'center',
-          key: 'description'
-        },
-        {
-          title: '网站标识',
-          align: 'center',
-          key: 'hash',
-          width: 140
+          minWidth: 180,
+          key: 'name',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.name),
+              h('Col', params.row.description)
+            ])
+          }
         },
         {
           title: '网站地址',
@@ -174,11 +179,52 @@ export default {
           sortable: true
         },
         {
+          title: '应用组',
+          align: 'center',
+          key: 'num_app_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '应用',
+          align: 'center',
+          key: 'num_app',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口组',
+          align: 'center',
+          key: 'num_interface_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口',
+          align: 'center',
+          key: 'num_interface',
+          width: 100,
+          sortable: true
+        },
+        {
           title: '所属用户',
           align: 'center',
-          width: 120,
+          width: 150,
+          key: 'uid',
           sortable: true,
-          key: 'uid'
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.username),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                    color: 'warning'
+                  }
+                }, params.row.uid)
+
+              ])
+            ])
+          }
         },
         {
           title: '网站状态',

@@ -38,7 +38,7 @@
             <Button type="primary" v-has="'AppGroup/add'" @click="alertAdd" icon="md-add">{{ $t('add_button') }}</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border stripe></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -151,37 +151,73 @@ export default {
       appWeb: [],
       columnsList: [
         {
-          title: '序号',
-          type: 'index',
-          width: 65,
+          title: '标识',
           align: 'center',
-          sortable: true
+          key: 'hash',
+          width: 140,
+          sortable: true,
+          render: (h, params) => {
+            return h('Tag', {
+              attrs: {
+                color: 'success'
+              }
+            }, params.row.hash)
+          }
         },
         {
           title: '应用组名称',
           align: 'center',
-          key: 'name'
+          minWidth: 180,
+          key: 'name',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.name),
+              h('Col', params.row.description)
+            ])
+          }
         },
         {
-          title: '应用组描述',
+          title: '请求量',
           align: 'center',
-          key: 'description'
+          key: 'hits',
+          width: 150,
+          sortable: true
         },
         {
-          title: '应用组标识',
+          title: '应用',
           align: 'center',
-          key: 'hash',
-          width: 140,
+          key: 'num_app',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口组',
+          align: 'center',
+          key: 'num_interface_group',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '接口',
+          align: 'center',
+          key: 'num_interface',
+          width: 100,
           sortable: true
         },
         {
           title: '所属网站',
           align: 'center',
-          minWidth: 150,
+          width: 180,
+          key: 'app_web',
           sortable: true,
           render: (h, params) => {
-            let web = params.row.app_web_name + '   (' + params.row.app_web + ')'
-            return h('span', web)
+            return h('Row', [
+              h('Col', params.row.app_web_name),
+              h('Col', [
+                h('Tag', params.row.app_web)
+              ])
+            ])
           }
         },
         {
@@ -192,20 +228,23 @@ export default {
           sortable: true
         },
         {
-          title: '请求量',
-          align: 'center',
-          key: 'hits',
-          width: 150,
-          sortable: true
-        },
-        {
           title: '所属用户',
           align: 'center',
-          width: 120,
+          width: 150,
+          key: 'uid',
           sortable: true,
           render: (h, params) => {
-            let username = params.row.username + '   (' + params.row.uid + ')'
-            return h('span', username)
+            return h('Row', [
+              h('Col', params.row.username),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                    color: 'warning'
+                  }
+                }, params.row.uid)
+
+              ])
+            ])
           }
         },
         {

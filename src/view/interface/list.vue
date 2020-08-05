@@ -45,7 +45,7 @@
             <Button type="info" class="margin-left-5" to="/wiki/list" icon="md-bookmarks">接口文档</Button>
           </div>
           <div>
-            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border disabled-hover></Table>
+            <Table :loading="listLoading" :columns="columnsList" :data="tableData" border stripe></Table>
           </div>
           <div class="margin-top-15" style="text-align: center">
             <Page :total="tableShow.listCount" :current="tableShow.currentPage"
@@ -268,38 +268,61 @@ export default {
           key: 'info'
         },
         {
-          title: '接口组名称',
-          align: 'center',
-          minWidth: 190,
-          key: 'group_name',
-          sortable: true
-        },
-        {
           title: '真实类库',
           align: 'center',
-          key: 'api_class',
           width: 190,
-          sortable: true
+          key: 'api_class',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.api_class),
+              h('Col', [
+                h('Tag', '映射: ' + params.row.hash)
+              ])
+            ])
+          }
         },
         {
-          title: '接口映射',
-          align: 'center',
-          key: 'hash',
-          width: 140
-        },
-        {
-          title: '接口请求量',
+          title: '请求量',
           align: 'center',
           key: 'hits',
-          width: 150,
+          width: 100,
           sortable: true
+        },
+        {
+          title: '接口组',
+          align: 'center',
+          width: 180,
+          key: 'group_hash',
+          sortable: true,
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.group_name),
+              h('Col', [
+                h('Tag', params.row.group_hash)
+              ])
+            ])
+          }
         },
         {
           title: '所属用户',
           align: 'center',
-          width: 120,
+          width: 150,
+          key: 'uid',
           sortable: true,
-          key: 'uid'
+          render: (h, params) => {
+            return h('Row', [
+              h('Col', params.row.username),
+              h('Col', [
+                h('Tag', {
+                  attrs: {
+                    color: 'warning'
+                  }
+                }, params.row.uid)
+
+              ])
+            ])
+          }
         },
         {
           title: '请求方式',
@@ -374,7 +397,7 @@ export default {
         {
           title: '操作',
           align: 'center',
-          minWidth: 375,
+          width: 375,
           fixed: 'right',
           render: (h, params) => {
             return h('div', [
@@ -465,6 +488,9 @@ export default {
   methods: {
     alertAdd () {
       let vm = this
+      getAll(0).then(response => {
+        vm.apiUserGroup = response.data.data.list
+      })
       getHash().then(response => {
         vm.formItem.hash = response.data.data.hash
       })
